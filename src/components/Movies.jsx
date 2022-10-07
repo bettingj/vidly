@@ -1,12 +1,16 @@
 import React, { Component } from "react";
 import { deleteMovie, getMovies } from "../services/fakeMovieService";
+import Like from "./Like";
 
 //prints a table of movie data retrieved via fakeMovieService and provides a delete option for each of the movies
-class Movie extends Component {
+class Movies extends Component {
   state = {
-    //only need the list of movies
-    movies: getMovies(),
+    movies: [],
   };
+  constructor() {
+    super();
+    this.state.movies = getMovies();
+  }
 
   render() {
     //print a table that details the list of movies
@@ -40,6 +44,7 @@ class Movie extends Component {
           <th scope="col">Genre</th>
           <th scope="col">Stock</th>
           <th scope="col">Rate</th>
+          <th scope="col">Like</th>
           <th scope="col"></th>
         </tr>
       </thead>
@@ -55,6 +60,9 @@ class Movie extends Component {
             <td>{movie.genre.name}</td>
             <td>{movie.numberInStock}</td>
             <td>{movie.dailyRentalRate}</td>
+            <td>
+              <Like onLike={() => this.handleLike(movie)} liked={movie.liked} />
+            </td>
             <td>
               {/*the button deletes the movie from the list. It then tells react to update the page*/}
               <button
@@ -72,6 +80,10 @@ class Movie extends Component {
       </tbody>
     );
   }
+  handleLike(movie) {
+    movie.liked = !movie.liked;
+    this.setState({ movies: this.state.movies });
+  }
 }
 
-export default Movie;
+export default Movies;
