@@ -3,18 +3,23 @@ import { deleteMovie, getMovies } from "../services/fakeMovieService";
 import { getGenres } from "../services/fakeGenreService";
 import Pagination from "./Pagination";
 import { paginate } from "../utils/paginate";
-import Genres from "../components/Genres";
+import ListGroup from "./ListGroup";
 import Like from "./Like";
 
 //prints a table of movie data retrieved via fakeMovieService and provides a delete option for each of the movies
 class Movies extends Component {
   state = {
-    movies: getMovies(),
+    movies: [],
     genres: getGenres(),
     currentGenre: "All Genres",
     currentPage: 1,
     pageSize: 4,
   };
+
+  componentDidMount() {
+    const genres = [{ name: "All Genres" }, ...getGenres()];
+    this.setState({ movies: getMovies(), genres });
+  }
 
   handleLike = (movie) => {
     movie.liked = !movie.liked;
@@ -24,7 +29,7 @@ class Movies extends Component {
     this.setState({ currentPage: page });
   };
   handleGenreChange = (currentGenre) => {
-    this.setState({ currentGenre });
+    this.setState({ currentGenre, currentPage: 1 });
   };
 
   render() {
@@ -55,11 +60,13 @@ class Movies extends Component {
     return (
       <div className="container mt-4">
         <div className="row">
-          <Genres
-            genres={genres}
-            currentGenre={currentGenre}
-            onGenreChange={this.handleGenreChange}
-          />
+          <div className="col-3">
+            <ListGroup
+              items={genres}
+              currentItem={currentGenre}
+              onItemChange={this.handleGenreChange}
+            />
+          </div>
           <div className="col">
             <p>
               Showing {numOfGenreMovies} of {totalMovieCount} movies in the
