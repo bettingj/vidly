@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 
-const ListGroup = (props) => {
-  const { items, currentItem, textProperty, valueProperty, onItemChange } =
-    props;
-
+const ListGroup = ({
+  items,
+  currentItem,
+  textProperty,
+  valueProperty,
+  onItemChange,
+}) => {
   return (
     <ul className="list-group">
       {items.map((item) => (

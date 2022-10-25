@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { getMovies } from "../services/fakeMovieService";
 import { getGenres } from "../services/fakeGenreService";
-import Pagination from "./common/Pagination";
+import Pagination from "./common/pagination";
 import { paginate } from "../utils/paginate";
-import ListGroup from "./common/ListGroup";
+import ListGroup from "./common/listGroup";
 import MoviesTable from "./moviesTable";
 import _ from "lodash";
 
@@ -41,20 +41,14 @@ class Movies extends Component {
     this.setState({ currentGenre, currentPage: 1 });
   };
 
-  render() {
+  getPagedData = () => {
     const {
       pageSize,
       currentPage,
       movies: allMovies,
-      genres,
       currentGenre,
       sortColumn,
     } = this.state;
-    const totalMovieCount = allMovies.length;
-
-    //Check if there aren't movies in the database list
-    if (totalMovieCount === 0)
-      return <p className="mt-4">There are no movies in the database</p>;
 
     //Perform functions for genre filtering, sorting, and pagination
     const filtered =
@@ -64,6 +58,25 @@ class Movies extends Component {
 
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
     const movies = paginate(sorted, currentPage, pageSize);
+
+    return { movies, itemCount: filtered.length };
+  };
+
+  render() {
+    const {
+      pageSize,
+      currentPage,
+      movies: allMovies,
+      genres,
+      currentGenre,
+      sortColumn,
+    } = this.state;
+
+    //Check if there aren't movies in the database list
+    if (allMovies.length === 0)
+      return <p className="mt-4">There are no movies in the database</p>;
+
+    const { movies, itemCount } = this.getPagedData();
 
     //print list of movie details and sorting/filtering options
     return (
@@ -77,7 +90,7 @@ class Movies extends Component {
             />
           </div>
           <div className="col">
-            <p>Showing {totalMovieCount} movies the database</p>
+            <p>Showing {allMovies.length} movies the database</p>
             <MoviesTable
               movies={movies}
               sortColumn={sortColumn}
@@ -86,7 +99,7 @@ class Movies extends Component {
               onSort={this.handleSort}
             />
             <Pagination
-              itemCount={filtered.length}
+              itemCount={itemCount}
               pageSize={pageSize}
               currentPage={currentPage}
               onPageChange={this.handlePageChange}
