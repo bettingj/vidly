@@ -6,7 +6,7 @@ import Rentals from "./components/Rentals";
 import NotFound from "./components/NotFound";
 import NavBar from "./components/NavBar";
 import MovieForm from "./components/MovieForm";
-import LoginForm from "./components/common/loginForm";
+import LoginForm from "./components/loginForm";
 import "./App.css";
 
 function App() {
